@@ -1,0 +1,63 @@
+<p align="right"><a href="README.md">中文</a></p>
+
+# ClaudeWechat — Let Claude Operate WeChat for You
+
+> Tell Claude what to send, and it opens WeChat, finds the contact, and sends the message — automatically.
+
+A Claude plugin that automates **WeChat Desktop** through Computer Use (screenshot + click + type). Ships with a complete UI layout map and optimized action flows so Claude doesn't waste time on exploratory screenshots.
+
+> **Current status:** Requires Computer Use capability. Claude Code CLI doesn't support it yet — only **Claude Desktop** works for now. Claude Code users can install it today and it'll activate once Computer Use lands in the CLI.
+
+## What It Can Do
+
+**Send messages** — Search any contact or group chat, navigate to it, and send your message.
+
+**Quick reply** — Type and send directly in the current conversation.
+
+**Read messages** — Capture chat history via screenshots, scroll up for older messages.
+
+**Forward messages** — Right-click forward to any contact.
+
+**Send files** — Send files and images via copy-paste (bypasses the native file picker).
+
+### Efficiency Gains
+
+Without this plugin, Claude typically needs 12-15 steps and 5-7 screenshots to send a single message — most of the time spent in "take screenshot → figure out what to click → take another screenshot" loops.
+
+This plugin ships a complete UI layout map for WeChat. Claude only screenshots at key checkpoints and acts blind the rest of the time:
+
+| Operation | Steps | Screenshots | Savings |
+|-----------|-------|-------------|---------|
+| Send message to contact | 9 | 2 | ~40% |
+| Reply in current chat | 4 | 1 | ~50% |
+| Read messages | 2-3 | 1-2 | ~40% |
+| Forward a message | 7 | 3 | ~40% |
+
+## Installation
+
+### Claude Code
+
+```bash
+claude plugin marketplace add https://github.com/west0nG/ClaudeWechat
+claude plugin install wechat-desktop
+```
+
+### Claude Desktop
+
+Claude Desktop doesn't support plugins yet. Open [`skills/wechat-desktop/SKILL.md`](skills/wechat-desktop/SKILL.md), copy everything below the `---` frontmatter, and paste it into your project's **Custom Instructions**.
+
+## Requirements
+
+- **WeChat Desktop** installed and logged in (macOS or Windows)
+- Claude with **Computer Use** capability (screenshot + click + type)
+
+## Limitations
+
+- Cannot interact with native OS file pickers (use copy-paste workaround)
+- Cannot operate mini-programs (小程序) — these are embedded WebViews with their own UI
+- Will not and should not automate WeChat Pay
+- Cannot handle CAPTCHAs or security verification prompts
+
+## License
+
+MIT

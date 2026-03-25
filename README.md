@@ -1,82 +1,63 @@
-# WeChat Desktop Plugin for Claude
+<p align="right"><a href="README.en.md">English</a></p>
 
-Automate WeChat Desktop (微信桌面版) via Computer Use. Send messages, read chats, search contacts, forward messages — with pre-mapped UI layout that reduces steps by ~40-50%.
+# ClaudeWechat — 让 Claude 帮你操作微信
 
-[中文说明](#中文说明)
+> 一句话告诉 Claude 你想发什么，它自动打开微信、找到联系人、发出消息。
 
-> **Note:** This plugin requires **Computer Use** (screenshot + click + type). Claude Code CLI does not support Computer Use yet — currently only **Claude Desktop** can use this plugin. Claude Code users can install it now and it will work once Computer Use is added to the CLI.
->
-> **注意：** 此插件依赖 **Computer Use**（截图 + 点击 + 输入）。Claude Code CLI 暂不支持 Computer Use——目前仅 **Claude Desktop** 可使用。Claude Code 用户可以先安装，等 CLI 支持 Computer Use 后即可使用。
+这是一个 Claude 插件，通过 Computer Use（屏幕截图 + 鼠标点击 + 键盘输入）自动操作**微信桌面版**。内置完整的 UI 布局映射和优化操作流程，让 Claude 不用反复截图试探，直接高效完成任务。
 
-## Installation
+> **当前状态：** 此插件依赖 Computer Use 能力。Claude Code CLI 暂不支持，目前仅 **Claude Desktop** 可用。Claude Code 用户可先安装，等 CLI 支持后即可使用。
+
+## 能做什么
+
+**对话发送** — 搜索联系人或群聊，自动定位并发送消息
+
+**快速回复** — 在当前聊天窗口直接输入并发送
+
+**消息阅读** — 截图读取聊天记录，支持向上滚动查看历史
+
+**消息转发** — 右键转发到指定联系人
+
+**文件发送** — 通过复制粘贴发送文件和图片（绕过系统文件选择器）
+
+### 效率对比
+
+没有这个插件，Claude 发一条消息通常需要 12-15 步操作和 5-7 次截图——大量时间花在「看一眼屏幕→想想该点哪→再看一眼」的循环上。
+
+这个插件内置了微信的完整 UI 布局图，Claude 只需在关键节点截图确认，其余步骤直接盲操作：
+
+| 操作 | 步骤数 | 截图次数 | 节省 |
+|------|--------|----------|------|
+| 给联系人发消息 | 9 | 2 | ~40% |
+| 回复当前聊天 | 4 | 1 | ~50% |
+| 阅读聊天记录 | 2-3 | 1-2 | ~40% |
+| 转发消息 | 7 | 3 | ~40% |
+
+## 安装
 
 ### Claude Code
 
 ```bash
-claude plugin add /path/to/claudewechat
+claude plugin marketplace add https://github.com/west0nG/ClaudeWechat
+claude plugin install wechat-desktop
 ```
-
-Or add this repo as a plugin source.
 
 ### Claude Desktop
 
-Claude Desktop doesn't support plugins yet. Copy the contents of [`skills/wechat-desktop/SKILL.md`](skills/wechat-desktop/SKILL.md) (everything after the `---` frontmatter) into your project's **Custom Instructions**.
+Claude Desktop 暂不支持插件。请打开 [`skills/wechat-desktop/SKILL.md`](skills/wechat-desktop/SKILL.md)，复制 `---` 分隔线以下的全部内容，粘贴到你的项目 **Custom Instructions** 中。
 
-## Requirements
+## 系统要求
 
-- WeChat Desktop installed and logged in
-- Claude with **Computer Use** capability (screenshot + click + type)
-- macOS or Windows
+- **微信桌面版**已安装并登录（macOS 或 Windows）
+- Claude 需具备 **Computer Use** 能力（截图 + 点击 + 输入）
 
-## What It Does
+## 已知限制
 
-| Operation | Steps | Screenshots |
-|-----------|-------|-------------|
-| Send message to contact | 9 | 2 |
-| Reply in current chat | 4 | 1 |
-| Read messages | 2-3 | 1-2 |
-| Forward a message | 7 | 3 |
-
-Without this plugin, Claude typically needs 12-15 steps and 5-7 screenshots for a single message — this plugin cuts that by ~40-50% through pre-mapped UI coordinates and checkpoint-based screenshotting.
-
-## Limitations
-
-- Cannot interact with native OS file pickers (use copy-paste workaround)
-- Cannot operate WeChat mini-programs (小程序)
-- Cannot automate WeChat Pay (微信支付)
-- Cannot handle CAPTCHAs or security verification
+- 无法操作系统原生文件选择器（可通过复制粘贴绕过）
+- 无法操作小程序（小程序是独立的内嵌 WebView）
+- 不会也不应该操作微信支付
+- 无法处理验证码或安全验证弹窗
 
 ## License
 
 MIT
-
----
-
-## 中文说明
-
-通过 Computer Use 自动操作微信桌面版。发消息、读聊天记录、搜索联系人、转发消息——内置 UI 布局映射，减少约 40-50% 的操作步骤。
-
-### 安装方法
-
-**Claude Code：**
-
-```bash
-claude plugin add /path/to/claudewechat
-```
-
-**Claude Desktop：**
-
-Claude Desktop 暂不支持插件安装。请复制 [`skills/wechat-desktop/SKILL.md`](skills/wechat-desktop/SKILL.md) 中 `---` 分隔线以下的内容，粘贴到项目的 **Custom Instructions** 中。
-
-### 系统要求
-
-- 微信桌面版已安装并登录
-- Claude 需支持 **Computer Use**（截图 + 点击 + 输入）
-- macOS 或 Windows
-
-### 已知限制
-
-- 无法操作系统原生文件选择器（可用复制粘贴替代）
-- 无法操作微信小程序
-- 无法操作微信支付（也不应该尝试）
-- 无法处理验证码或安全验证
