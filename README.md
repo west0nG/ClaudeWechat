@@ -35,15 +35,13 @@
 
 ## 安装
 
-### Claude Desktop（推荐）
+### Claude Desktop
 
-在 Claude Desktop 中安装此插件：
+Claude Desktop 暂不支持从 GitHub 直接安装第三方插件。请手动添加：
 
-**Settings → Plugins → Add Plugin → 输入仓库地址：**
-
-```
-https://github.com/west0nG/ClaudeWechat
-```
+1. 打开 [`skills/wechat-desktop/SKILL.md`](skills/wechat-desktop/SKILL.md)
+2. 复制 `---` 分隔线以下的**全部内容**
+3. 粘贴到你的项目 **Custom Instructions** 中
 
 ### Claude Code
 

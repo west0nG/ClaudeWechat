@@ -35,15 +35,13 @@ This plugin ships a complete UI layout map for WeChat and uses `computer_batch` 
 
 ## Installation
 
-### Claude Desktop (Recommended)
+### Claude Desktop
 
-Install this plugin in Claude Desktop:
+Claude Desktop doesn't support installing third-party plugins from GitHub directly. Add it manually:
 
-**Settings → Plugins → Add Plugin → enter the repo URL:**
-
-```
-https://github.com/west0nG/ClaudeWechat
-```
+1. Open [`skills/wechat-desktop/SKILL.md`](skills/wechat-desktop/SKILL.md)
+2. Copy everything **below** the `---` frontmatter
+3. Paste into your project's **Custom Instructions**
 
 ### Claude Code
 

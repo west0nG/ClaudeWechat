@@ -135,6 +135,81 @@ Same as "Send Message to a Contact" — group names work in search. If the group
 
 **Total: 7 steps, 3 screenshots.** This flow is inherently more complex due to context menus and dialogs.
 
+### Broadcast Message to Multiple Contacts (群发)
+
+Send the same message to a list of contacts. This is a loop over the "Send Message to a Contact" flow.
+
+```
+   1. request_access(["WeChat"]) + open_application("WeChat")
+📸 2. screenshot → confirm WeChat is open, locate search box
+
+For EACH contact in the list:
+   3. computer_batch: [click search box, type contact name, wait 1s]
+📸 4. screenshot → verify correct contact
+   5. click the correct search result
+   6. computer_batch: [click input box, key "cmd+a", type message, key "Return"]
+   7. click search box "X" button to clear search (or click search box, cmd+a, delete)
+```
+
+**Tips:**
+- Do NOT screenshot after each send — trust the flow. Only screenshot if a send fails.
+- After sending, clear the search box before searching for the next contact. The "X" button on the right side of the search box clears it, or use `cmd+a` + `Backspace` in the search field.
+- Report progress to the user after each send: "Sent to [contact 1], sending to [contact 2]..."
+- If one contact fails (not found, wrong match), skip it, report the failure, and continue with the rest.
+- **Total per contact: ~4 tool calls.** For N contacts: ~4N + 2 setup calls.
+
+### Read and Summarize Unread Messages
+
+Scan the chat list for unread indicators (red badges) and summarize what's new.
+
+```
+   1. request_access(["WeChat"]) + open_application("WeChat")
+📸 2. screenshot → capture the chat list (left column)
+   3. identify chats with red badge numbers (unread count indicators)
+
+For EACH unread chat:
+   4. click the chat in the list
+📸 5. screenshot → capture the visible messages in the chat window
+   6. (if needed) use `zoom` on message area for small text
+   7. note the sender, content, and timestamp of recent messages
+
+After scanning all unread chats:
+   8. return to the original chat or the first chat in the list
+   9. present a summary to the user grouped by contact/group
+```
+
+**Tips:**
+- Red badges show unread count (e.g., red circle with "3"). Muted chats show a small red dot instead of a number.
+- Scroll down the chat list if there are more unread chats below the visible area.
+- For group chats with many unread messages, only summarize the most recent 5-10 visible messages — don't scroll through the entire history.
+- Use `zoom` on the chat area if messages contain small text or images that need closer inspection.
+- Present the summary in a structured format:
+  ```
+  Unread messages summary:
+  - [Contact A] (3 unread): "latest message preview..."
+  - [Group B] (12 unread): 3 people chatting about [topic], last message from [person]: "..."
+  ```
+
+### Quote Reply to a Specific Message (引用回复)
+
+Reply to a specific message with a quote reference.
+
+```
+📸 1. screenshot → identify the target message to quote
+   2. right-click on the target message
+📸 3. screenshot → find "引用" (Quote) in the context menu
+   4. click "引用"
+   5. computer_batch: [type reply message, key "Return"]
+```
+
+**Total: 5 steps, 2 screenshots.**
+
+**Tips:**
+- The context menu item is "引用" (Quote), NOT "转发" (Forward). They are different operations.
+- After clicking "引用", the input box will show a quote preview of the referenced message. The cursor is automatically placed in the input box ready for typing.
+- If the target message is not visible on screen, scroll up/down in the chat area first to find it.
+- Right-click must land precisely on the message bubble, not on the whitespace around it.
+
 ### Send a File or Image
 
 **Known limitation:** Clicking the file/image button opens a native OS file picker that Computer Use cannot interact with.
