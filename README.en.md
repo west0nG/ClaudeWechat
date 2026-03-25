@@ -6,7 +6,7 @@
 
 A Claude plugin that automates **WeChat Desktop** through Computer Use (screenshot + click + type). Ships with a complete UI layout map and optimized action flows so Claude doesn't waste time on exploratory screenshots.
 
-> **Current status:** Requires Computer Use capability. Claude Code CLI doesn't support it yet — only **Claude Desktop** works for now. Claude Code users can install it today and it'll activate once Computer Use lands in the CLI.
+> **Current status:** Requires Computer Use capability. Currently only **Claude Desktop** supports Computer Use — Claude Code CLI does not yet. CLI users can install now and it'll activate once Computer Use lands in the CLI.
 
 ## What It Can Do
 
@@ -22,18 +22,28 @@ A Claude plugin that automates **WeChat Desktop** through Computer Use (screensh
 
 ### Efficiency Gains
 
-Without this plugin, Claude typically needs 12-15 steps and 5-7 screenshots to send a single message — most of the time spent in "take screenshot → figure out what to click → take another screenshot" loops.
+Without this plugin, Claude typically needs 12-15 tool calls to send a single message — most of the time spent in "take screenshot → figure out what to click → take another screenshot" loops.
 
-This plugin ships a complete UI layout map for WeChat. Claude only screenshots at key checkpoints and acts blind the rest of the time:
+This plugin ships a complete UI layout map for WeChat and uses `computer_batch` to combine multiple actions into single calls, dramatically reducing round-trips:
 
-| Operation | Steps | Screenshots | Savings |
-|-----------|-------|-------------|---------|
-| Send message to contact | 9 | 2 | ~40% |
-| Reply in current chat | 4 | 1 | ~50% |
-| Read messages | 2-3 | 1-2 | ~40% |
+| Operation | Tool Calls | Screenshots | Savings |
+|-----------|-----------|-------------|---------|
+| Send message to contact | 7 | 3 | ~50% |
+| Reply in current chat | 2 | 1 | ~70% |
+| Read messages | 2-3 | 1-2 | ~50% |
 | Forward a message | 7 | 3 | ~40% |
 
 ## Installation
+
+### Claude Desktop (Recommended)
+
+Install this plugin in Claude Desktop:
+
+**Settings → Plugins → Add Plugin → enter the repo URL:**
+
+```
+https://github.com/west0nG/ClaudeWechat
+```
 
 ### Claude Code
 
@@ -42,9 +52,7 @@ claude plugin marketplace add https://github.com/west0nG/ClaudeWechat
 claude plugin install wechat-desktop
 ```
 
-### Claude Desktop
-
-Claude Desktop doesn't support plugins yet. Open [`skills/wechat-desktop/SKILL.md`](skills/wechat-desktop/SKILL.md), copy everything below the `---` frontmatter, and paste it into your project's **Custom Instructions**.
+> Claude Code CLI doesn't support Computer Use yet — the plugin will activate once it does.
 
 ## Requirements
 

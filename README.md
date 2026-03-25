@@ -6,7 +6,7 @@
 
 这是一个 Claude 插件，通过 Computer Use（屏幕截图 + 鼠标点击 + 键盘输入）自动操作**微信桌面版**。内置完整的 UI 布局映射和优化操作流程，让 Claude 不用反复截图试探，直接高效完成任务。
 
-> **当前状态：** 此插件依赖 Computer Use 能力。Claude Code CLI 暂不支持，目前仅 **Claude Desktop** 可用。Claude Code 用户可先安装，等 CLI 支持后即可使用。
+> **当前状态：** 此插件依赖 Computer Use 能力。目前仅 **Claude Desktop** 支持 Computer Use，Claude Code CLI 暂不支持。CLI 用户可先安装，等支持后即可使用。
 
 ## 能做什么
 
@@ -22,18 +22,28 @@
 
 ### 效率对比
 
-没有这个插件，Claude 发一条消息通常需要 12-15 步操作和 5-7 次截图——大量时间花在「看一眼屏幕→想想该点哪→再看一眼」的循环上。
+没有这个插件，Claude 发一条消息通常需要 12-15 次工具调用——大量时间花在「截图→找位置→再截图」的循环上。
 
-这个插件内置了微信的完整 UI 布局图，Claude 只需在关键节点截图确认，其余步骤直接盲操作：
+这个插件内置了微信的完整 UI 布局图，并通过 `computer_batch` 将多个操作合并为单次调用，大幅减少来回次数：
 
-| 操作 | 步骤数 | 截图次数 | 节省 |
-|------|--------|----------|------|
-| 给联系人发消息 | 9 | 2 | ~40% |
-| 回复当前聊天 | 4 | 1 | ~50% |
-| 阅读聊天记录 | 2-3 | 1-2 | ~40% |
+| 操作 | 工具调用次数 | 截图次数 | 节省 |
+|------|-------------|----------|------|
+| 给联系人发消息 | 7 | 3 | ~50% |
+| 回复当前聊天 | 2 | 1 | ~70% |
+| 阅读聊天记录 | 2-3 | 1-2 | ~50% |
 | 转发消息 | 7 | 3 | ~40% |
 
 ## 安装
+
+### Claude Desktop（推荐）
+
+在 Claude Desktop 中安装此插件：
+
+**Settings → Plugins → Add Plugin → 输入仓库地址：**
+
+```
+https://github.com/west0nG/ClaudeWechat
+```
 
 ### Claude Code
 
@@ -42,9 +52,7 @@ claude plugin marketplace add https://github.com/west0nG/ClaudeWechat
 claude plugin install wechat-desktop
 ```
 
-### Claude Desktop
-
-Claude Desktop 暂不支持插件。请打开 [`skills/wechat-desktop/SKILL.md`](skills/wechat-desktop/SKILL.md)，复制 `---` 分隔线以下的全部内容，粘贴到你的项目 **Custom Instructions** 中。
+> Claude Code CLI 暂不支持 Computer Use，安装后需等 CLI 支持才能使用。
 
 ## 系统要求
 
