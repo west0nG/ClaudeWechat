@@ -5,247 +5,136 @@ description: "Automate WeChat Desktop (微信桌面版) on macOS or Windows via 
 
 # WeChat Desktop Automation
 
-Operate WeChat Desktop via Computer Use tools. This skill provides a pre-mapped UI layout and optimized action sequences so Claude can act on WeChat with minimal exploratory screenshots.
+Operate WeChat Desktop via Computer Use tools with minimal screenshots and maximum batching.
 
-## Prerequisites: Permission & App Focus
+## Setup (required before EVERY operation)
 
-Before ANY interaction with WeChat, you MUST complete these two steps:
+1. **`request_access(["WeChat"])`** — get permission (once per session)
+2. **`open_application("WeChat")`** — bring to foreground. Use this instead of Cmd+Tab. Re-call if another app steals focus.
 
-1. **`request_access`** — Call `request_access` with `["WeChat"]` to get permission. Without this, every click/type will fail.
-2. **`open_application`** — Call `open_application("WeChat")` to bring WeChat to the foreground. Do NOT use Cmd+Tab — `open_application` is more reliable and handles minimized/hidden windows.
+## Core Rules
 
-**If another app steals focus mid-operation** (e.g., a terminal or notification), call `open_application("WeChat")` again. Do NOT try to request_access for the blocking app just to dismiss it — simply re-focus WeChat.
+1. Take ONE screenshot at the start to confirm WeChat is visible and locate UI elements.
+2. **Use `computer_batch`** to combine predictable sequences into one call.
+3. **Skip `find` tool** — doesn't work on native apps. Use coordinates from screenshot.
+4. Send with **Enter key**, not Send button.
+5. Wait **1s** after typing in search before screenshotting results.
+6. **Always `cmd+a` before typing** in input box to clear leftover text.
+7. **macOS**: Cmd shortcuts. **Windows**: Ctrl shortcuts. Detect from traffic lights vs title bar.
 
-## Core Philosophy: Batch Actions, Verify at Checkpoints
-
-The biggest performance drains are (1) unnecessary screenshots and (2) individual tool calls for predictable sequences. WeChat's layout is highly consistent — once you've confirmed the window is open, you can batch multiple actions together.
-
-**Rules:**
-1. Take ONE screenshot at the start to confirm WeChat is visible and capture window dimensions.
-2. After that, only screenshot at **checkpoints** (marked with 📸 below).
-3. **Use `computer_batch`** to combine predictable action sequences (click → type → key) into a single tool call. This cuts round-trips dramatically.
-4. **Skip the `find` tool** — it rarely works on native desktop apps like WeChat. Go directly to coordinate-based clicking from the initial screenshot.
-5. Always send messages with the **Enter key**, not by clicking the Send button.
-6. After typing in search, **always wait 800ms–1s** before screenshotting results.
-7. **Always clear the input box** before typing — use `cmd+a` (macOS) or `ctrl+a` (Windows) to select all existing content, then type your new text to replace it.
-
-## Platform Detection
-
-From the initial screenshot, determine:
-- **macOS**: Red/yellow/green traffic light buttons top-left. Native Cocoa app.
-- **Windows**: Standard minimize/maximize/close top-right. "微信" in title bar.
-
-This matters for keyboard shortcuts (see reference table below).
-
-## UI Layout Map
-
-WeChat Desktop uses a fixed three-column layout:
+## UI Layout
 
 ```
 ┌──────┬───────────────┬─────────────────────────┐
 │ Nav  │ Chat List     │ Chat Window             │
-│ ~48px│ ~260px        │ remaining width         │
-│      │               │                         │
+│~48px │ ~260px        │ remaining width         │
 │  💬  │ [Search Box]  │ [Chat Header / Name]    │
-│  📒  │               │                         │
-│  ⭐  │  Contact 1    │  Message history        │
-│  📁  │  Contact 2    │  (scrollable)           │
-│      │  Contact 3    │                         │
-│      │  ...          │ [Toolbar: emoji/file/…] │
+│  📒  │  Contact 1    │  Message history        │
+│  ⭐  │  Contact 2    │  (scrollable)           │
+│  📁  │  ...          │ [Toolbar: emoji/file/…] │
 │      │               │ [Message Input Box]     │
-│      │               │           [Send Button] │
 └──────┴───────────────┴─────────────────────────┘
 ```
 
-### Coordinate Estimation
+Read actual coordinates from the initial screenshot. Don't use hardcoded values. Search results group into **Contacts** > **Group Chats** > **Chat History** — always prefer Contacts matches.
 
-**Do NOT use hardcoded coordinates.** WeChat window size varies. After the initial screenshot, visually locate elements and read their coordinates from the screenshot. Key landmarks to identify:
+## Operations
 
-| Element | How to Find It |
-|---------|---------------|
-| Search box | Gray rounded rectangle at top of the middle column, with magnifying glass icon and placeholder text "Search" or "搜索" |
-| First search result | First item below the "Contacts" section header in search results — prioritize exact matches under "Contacts" over "Group Chats" or "Chat History" |
-| Message input box | Large white/dark text area at the bottom of the right column, above the toolbar with emoji/file icons |
-| Chat header | Text at the very top of the right column showing the contact or group name |
-
-**The relative layout is always the same** — three columns, search at top of middle column, input at bottom of right column. Use the screenshot to get actual pixel positions.
-
-## Operation Flows
-
-Each operation below lists the exact steps. Steps marked 📸 require a screenshot; all other steps are executed blind or batched.
-
-### Send Message to a Contact (most common)
+### Send Message to a Contact
 
 ```
-   1. request_access(["WeChat"])
-   2. open_application("WeChat")
-📸 3. screenshot → confirm WeChat is open, note window size, locate search box position
-   4. computer_batch: [click search box, type contact name, wait 1s]
-📸 5. screenshot → verify correct contact in search results
-   6. click the correct search result (prefer "Contacts" section over "Group Chats" or "Chat History")
-   7. computer_batch: [click input box, key "cmd+a", type message, key "Return", screenshot]
+📸 1. screenshot → locate search box
+   2. computer_batch: [click search box, type contact name, wait 1s]
+📸 3. screenshot → verify correct contact in results
+   4. click correct search result (prefer Contacts section)
+   5. computer_batch: [click input box, key "cmd+a", type message, key "Return", screenshot]
 ```
+**5 calls, 3 screenshots.** (Setup calls excluded.)
 
-**Total: 7 tool calls, 3 screenshots.** Steps 1-2 are one-time setup. The actual operation is 5 calls.
+Tips: `cmd+a` clears leftover drafts. `type` handles Chinese directly. Ask user for full name/WeChat ID if multiple similar contacts appear.
 
-**Tips:**
-- Step 7 uses `cmd+a` before typing to clear any leftover text in the input box. This prevents accidentally prepending to old drafts.
-- For Chinese messages, the `type` action handles Chinese characters directly — no IME interaction needed from Computer Use.
-- If the contact name yields multiple results, the search results are grouped: **Contacts** (individual), **Group Chats**, **Chat History**. Always click the match under "Contacts" unless the user specifically asked for a group.
-- If multiple contacts share similar names, ask the user for a distinguishing detail (full name, remark name, or WeChat ID).
-
-### Reply in Current Chat (already in the right conversation)
+### Reply in Current Chat
 
 ```
 📸 1. screenshot → confirm which chat is open
    2. computer_batch: [click input box, key "cmd+a", type reply, key "Return"]
 ```
-
-**Total: 2 tool calls, 1 screenshot.**
+**2 calls, 1 screenshot.**
 
 ### Read Recent Messages
 
 ```
-📸 1. screenshot → capture visible messages in chat window
-   2. (if more needed) scroll up in the chat area
-📸 3. screenshot → capture older messages
+📸 1. screenshot → capture visible messages
+   2. (optional) scroll up + screenshot for older messages
+```
+**2-3 calls.** Use `zoom` if text is small.
+
+### Broadcast to Multiple Contacts (群发)
+
+Loop over "Send Message" for each contact:
+```
+📸 1. screenshot → locate search box (once)
+Per contact:
+   2. computer_batch: [click search box, type name, wait 1s]
+📸 3. screenshot → verify contact
+   4. click result
+   5. computer_batch: [click input box, key "cmd+a", type message, key "Return"]
+   6. clear search (click X button or cmd+a + Backspace in search box)
+```
+**~4 calls per contact.** Skip screenshot after send unless it fails. Report progress to user after each send.
+
+### Read and Summarize Unread Messages
+
+```
+📸 1. screenshot → identify chats with red badges (unread indicators)
+Per unread chat:
+   2. click the chat
+📸 3. screenshot → read messages (zoom if needed)
+After all:
+   4. present structured summary to user
 ```
 
-**Total: 2-3 steps.** Use the `zoom` action on the chat area if text is too small to read.
+Red badges = unread count. Small red dot = muted unread. For groups, summarize only the most recent visible messages. Format:
+```
+- [Contact A] (3 unread): "latest message..."
+- [Group B] (12 unread): [person] discussing [topic]
+```
 
-### Search and Open a Group Chat
-
-Same as "Send Message to a Contact" — group names work in search. If the group name is long, use a distinctive substring. After clicking the result:
+### Quote Reply (引用回复)
 
 ```
-📸 verify the chat header shows the correct group name before typing
+📸 1. screenshot → find target message
+   2. right-click on the message bubble
+📸 3. screenshot → find "引用" (NOT "转发") in context menu
+   4. click "引用"
+   5. computer_batch: [type reply, key "Return"]
 ```
+**5 calls, 2 screenshots.** Cursor auto-focuses in input after clicking "引用".
 
 ### Forward a Message
 
 ```
-📸 1. screenshot → identify the target message
-   2. right-click on the message
-📸 3. screenshot → find "转发" in context menu
-   4. click "转发"
-📸 5. screenshot → contact picker dialog appears
-   6. search and select the target contact
-   7. click "发送" in the dialog
+📸 1. screenshot → find target message
+   2. right-click on message
+📸 3. screenshot → click "转发" in context menu
+📸 4. screenshot → search and select target contact in picker dialog
+   5. click "发送"
 ```
-
-**Total: 7 steps, 3 screenshots.** This flow is inherently more complex due to context menus and dialogs.
-
-### Broadcast Message to Multiple Contacts (群发)
-
-Send the same message to a list of contacts. This is a loop over the "Send Message to a Contact" flow.
-
-```
-   1. request_access(["WeChat"]) + open_application("WeChat")
-📸 2. screenshot → confirm WeChat is open, locate search box
-
-For EACH contact in the list:
-   3. computer_batch: [click search box, type contact name, wait 1s]
-📸 4. screenshot → verify correct contact
-   5. click the correct search result
-   6. computer_batch: [click input box, key "cmd+a", type message, key "Return"]
-   7. click search box "X" button to clear search (or click search box, cmd+a, delete)
-```
-
-**Tips:**
-- Do NOT screenshot after each send — trust the flow. Only screenshot if a send fails.
-- After sending, clear the search box before searching for the next contact. The "X" button on the right side of the search box clears it, or use `cmd+a` + `Backspace` in the search field.
-- Report progress to the user after each send: "Sent to [contact 1], sending to [contact 2]..."
-- If one contact fails (not found, wrong match), skip it, report the failure, and continue with the rest.
-- **Total per contact: ~4 tool calls.** For N contacts: ~4N + 2 setup calls.
-
-### Read and Summarize Unread Messages
-
-Scan the chat list for unread indicators (red badges) and summarize what's new.
-
-```
-   1. request_access(["WeChat"]) + open_application("WeChat")
-📸 2. screenshot → capture the chat list (left column)
-   3. identify chats with red badge numbers (unread count indicators)
-
-For EACH unread chat:
-   4. click the chat in the list
-📸 5. screenshot → capture the visible messages in the chat window
-   6. (if needed) use `zoom` on message area for small text
-   7. note the sender, content, and timestamp of recent messages
-
-After scanning all unread chats:
-   8. return to the original chat or the first chat in the list
-   9. present a summary to the user grouped by contact/group
-```
-
-**Tips:**
-- Red badges show unread count (e.g., red circle with "3"). Muted chats show a small red dot instead of a number.
-- Scroll down the chat list if there are more unread chats below the visible area.
-- For group chats with many unread messages, only summarize the most recent 5-10 visible messages — don't scroll through the entire history.
-- Use `zoom` on the chat area if messages contain small text or images that need closer inspection.
-- Present the summary in a structured format:
-  ```
-  Unread messages summary:
-  - [Contact A] (3 unread): "latest message preview..."
-  - [Group B] (12 unread): 3 people chatting about [topic], last message from [person]: "..."
-  ```
-
-### Quote Reply to a Specific Message (引用回复)
-
-Reply to a specific message with a quote reference.
-
-```
-📸 1. screenshot → identify the target message to quote
-   2. right-click on the target message
-📸 3. screenshot → find "引用" (Quote) in the context menu
-   4. click "引用"
-   5. computer_batch: [type reply message, key "Return"]
-```
-
-**Total: 5 steps, 2 screenshots.**
-
-**Tips:**
-- The context menu item is "引用" (Quote), NOT "转发" (Forward). They are different operations.
-- After clicking "引用", the input box will show a quote preview of the referenced message. The cursor is automatically placed in the input box ready for typing.
-- If the target message is not visible on screen, scroll up/down in the chat area first to find it.
-- Right-click must land precisely on the message bubble, not on the whitespace around it.
+**5-7 calls, 3 screenshots.** More screenshots needed due to context menus and dialogs.
 
 ### Send a File or Image
 
-**Known limitation:** Clicking the file/image button opens a native OS file picker that Computer Use cannot interact with.
-
-**Workaround:** Instruct the user to:
-1. Copy the file in Finder (Cmd+C) or Explorer (Ctrl+C)
-2. Then tell Claude to click the input box and paste (Cmd+V / Ctrl+V)
-
-Or have the user drag-and-drop the file into the chat window manually.
+**Cannot automate** — native file picker is inaccessible. Workaround: user copies file in Finder/Explorer, then Claude pastes with `cmd+v` in the input box.
 
 ## Scheduled Monitoring (定时检查)
 
-Combine this skill with `scheduled-tasks` or `CronCreate` to periodically check WeChat for new messages and alert the user.
-
-**Setup flow:**
-1. User asks: "每5分钟帮我看一下微信有没有新消息" or "monitor my WeChat"
-2. Create a scheduled task with `create_scheduled_task` or `CronCreate`:
-   - Prompt: "Open WeChat, take a screenshot of the chat list, check for unread badges. If there are unread messages from important contacts, summarize them."
-   - Cron: `*/5 * * * *` (every 5 minutes) or as requested
-
-**Monitoring prompt template:**
+Use `create_scheduled_task` or `CronCreate` for periodic unread checks:
 ```
-Open WeChat Desktop and check for unread messages.
-1. Call request_access(["WeChat"]) and open_application("WeChat")
-2. Take a screenshot of the chat list
-3. Look for red badge indicators (unread counts)
-4. If unread messages exist, click into each unread chat and screenshot to read the messages
-5. Report a summary of all unread messages
-6. If no unread messages, report "No new messages"
+Prompt: "Open WeChat, screenshot chat list, check for red badges.
+         If unread, click into each and summarize. Otherwise report no new messages."
+Cron: "*/5 * * * *"  (every 5 minutes, adjust as needed)
 ```
-
-**Tips:**
-- The scheduled task runs in a separate session, so it needs its own `request_access` call each time.
-- Keep monitoring lightweight — only screenshot the chat list, don't click into every chat unless there are unreads.
-- For "important contacts only" monitoring, the user should provide a list of contact names to watch for. Only click into chats matching those names.
-- Be aware that frequent screenshots may briefly bring WeChat to the foreground, which can be disruptive. Inform the user about this.
+Note: each scheduled run needs its own `request_access`. Will briefly foreground WeChat.
 
 ## Keyboard Shortcuts
 
@@ -253,50 +142,27 @@ Open WeChat Desktop and check for unread messages.
 |--------|-------|---------|
 | Send message | Enter | Enter |
 | New line | Shift+Enter | Shift+Enter |
-| Global search | Cmd+F | Ctrl+F |
+| Select all | Cmd+A | Ctrl+A |
 | Paste | Cmd+V | Ctrl+V |
-| Select all in input | Cmd+A | Ctrl+A |
-| Screenshot (WeChat) | Ctrl+Cmd+A | Alt+A |
+| Search | Cmd+F | Ctrl+F |
 
-**Enter behavior can be swapped** in WeChat settings (设置 → 通用 → 快捷键). If Enter inserts a newline instead of sending, the user has changed this setting. Ask them to confirm or switch it back.
+Enter/Shift+Enter can be swapped in WeChat settings (设置 → 通用 → 快捷键).
 
 ## Troubleshooting
 
-| Problem | Cause | Fix |
-|---------|-------|-----|
-| Tool call fails with "not in allowed applications" | Another app stole focus | Call `open_application("WeChat")` to re-focus, then retry |
-| Search results empty | Typed too fast, didn't wait | Add `wait 1-2s` after typing in search |
-| Wrong chat opened | Similar contact names | Verify chat header with screenshot; prefer "Contacts" section results |
-| Input box has leftover text | Previous draft not cleared | Always use `cmd+a` before typing to select and replace |
-| Message not sent | Input box didn't have focus | Click input box explicitly, then type |
-| Message became newline | Enter/Shift+Enter swapped | Ask user to check WeChat settings |
-| WeChat not visible after open_application | App on different monitor | Check screenshot note for monitor info; use `switch_display` if needed |
-| Native dialog appeared | File picker, alert, permission | Cannot automate — instruct user to handle manually |
-| Chinese text garbled or wrong | IME interference | The `type` action sends characters directly; if IME intercepts, try clicking input box first to ensure it has focus |
+| Problem | Fix |
+|---------|-----|
+| "not in allowed applications" error | `open_application("WeChat")` to re-focus |
+| Search results empty | Wait longer (1-2s) after typing |
+| Wrong chat opened | Verify chat header; prefer Contacts section |
+| Leftover text in input | `cmd+a` before typing |
+| Enter inserts newline | User swapped setting; ask them to check |
+| WeChat on wrong monitor | Use `switch_display` |
+| Native dialog blocks automation | Instruct user to handle manually |
 
-## Performance Expectations
+## Limitations
 
-| Operation | Without Skill | With Skill | Savings |
-|-----------|--------------|------------|---------|
-| Send message to contact | 12-15 calls | 7 calls | ~50% fewer calls |
-| Reply in current chat | 6-8 calls | 2 calls | ~70% fewer calls |
-| Read messages | 4-6 calls | 2-3 calls | ~50% fewer calls |
-| Forward a message | 10-14 calls | 7 calls | ~40% fewer calls |
-| Broadcast to N contacts | ~12N calls | ~4N + 2 calls | ~65% fewer calls |
-| Quote reply | 8-12 calls | 5 calls | ~50% fewer calls |
-| Scan unread summary | 15-20+ calls | 8-12 calls | ~40% fewer calls |
-
-The savings come from:
-1. Using `computer_batch` to combine click → type → key sequences
-2. Skipping `find` tool (doesn't work on native apps)
-3. Knowing to clear input with `cmd+a` before typing
-4. Using `open_application` instead of manual app switching
-
-## What This Skill Cannot Do
-
-Be upfront with the user about these limitations:
-- **Cannot interact with native OS dialogs** (file pickers, system alerts)
-- **Cannot read WeChat mini-programs** (小程序) — these are embedded webviews with their own UI
-- **Cannot automate WeChat Pay** (微信支付) — and should never attempt to
-- **Cannot handle CAPTCHAs or verification** if WeChat triggers security checks
-- **Cannot guarantee coordinates are pixel-perfect** — always read positions from the initial screenshot rather than using hardcoded values
+- Cannot interact with native OS dialogs (file pickers, alerts)
+- Cannot operate WeChat mini-programs (小程序) or WeChat Pay (微信支付)
+- Cannot handle CAPTCHAs or security verification
+- Coordinates are approximate — always calibrate from initial screenshot
