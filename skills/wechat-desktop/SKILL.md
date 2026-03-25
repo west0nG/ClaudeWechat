@@ -220,6 +220,33 @@ Reply to a specific message with a quote reference.
 
 Or have the user drag-and-drop the file into the chat window manually.
 
+## Scheduled Monitoring (定时检查)
+
+Combine this skill with `scheduled-tasks` or `CronCreate` to periodically check WeChat for new messages and alert the user.
+
+**Setup flow:**
+1. User asks: "每5分钟帮我看一下微信有没有新消息" or "monitor my WeChat"
+2. Create a scheduled task with `create_scheduled_task` or `CronCreate`:
+   - Prompt: "Open WeChat, take a screenshot of the chat list, check for unread badges. If there are unread messages from important contacts, summarize them."
+   - Cron: `*/5 * * * *` (every 5 minutes) or as requested
+
+**Monitoring prompt template:**
+```
+Open WeChat Desktop and check for unread messages.
+1. Call request_access(["WeChat"]) and open_application("WeChat")
+2. Take a screenshot of the chat list
+3. Look for red badge indicators (unread counts)
+4. If unread messages exist, click into each unread chat and screenshot to read the messages
+5. Report a summary of all unread messages
+6. If no unread messages, report "No new messages"
+```
+
+**Tips:**
+- The scheduled task runs in a separate session, so it needs its own `request_access` call each time.
+- Keep monitoring lightweight — only screenshot the chat list, don't click into every chat unless there are unreads.
+- For "important contacts only" monitoring, the user should provide a list of contact names to watch for. Only click into chats matching those names.
+- Be aware that frequent screenshots may briefly bring WeChat to the foreground, which can be disruptive. Inform the user about this.
+
 ## Keyboard Shortcuts
 
 | Action | macOS | Windows |
@@ -255,6 +282,9 @@ Or have the user drag-and-drop the file into the chat window manually.
 | Reply in current chat | 6-8 calls | 2 calls | ~70% fewer calls |
 | Read messages | 4-6 calls | 2-3 calls | ~50% fewer calls |
 | Forward a message | 10-14 calls | 7 calls | ~40% fewer calls |
+| Broadcast to N contacts | ~12N calls | ~4N + 2 calls | ~65% fewer calls |
+| Quote reply | 8-12 calls | 5 calls | ~50% fewer calls |
+| Scan unread summary | 15-20+ calls | 8-12 calls | ~40% fewer calls |
 
 The savings come from:
 1. Using `computer_batch` to combine click → type → key sequences
