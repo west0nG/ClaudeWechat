@@ -155,8 +155,6 @@ Or have the user drag-and-drop the file into the chat window manually.
 
 ## Troubleshooting
 
-These are the most common failure modes. The skill is designed to prevent them, but if they occur:
-
 | Problem | Cause | Fix |
 |---------|-------|-----|
 | Search results empty | Typed too fast, didn't wait | Add `wait 1-2s` after typing in search |
@@ -174,8 +172,6 @@ These are the most common failure modes. The skill is designed to prevent them, 
 | Reply in current chat | 6-8 steps, 3-4 screenshots | 4 steps, 1 screenshot | ~50% fewer steps |
 | Read messages | 4-6 steps | 2-3 steps | ~40% fewer steps |
 | Forward a message | 10-14 steps | 7 steps, 3 screenshots | ~40% fewer steps |
-
-Per-step latency (2-4 seconds per tool call) is unchanged — that's the API/model inference overhead, not something this skill can optimize. The gains come entirely from fewer steps and fewer screenshots.
 
 ## What This Skill Cannot Do
 
