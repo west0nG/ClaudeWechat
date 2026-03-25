@@ -4,6 +4,10 @@ Automate WeChat Desktop (微信桌面版) via Computer Use. Send messages, read 
 
 [中文说明](#中文说明)
 
+> **Note:** This plugin requires **Computer Use** (screenshot + click + type). Claude Code CLI does not support Computer Use yet — currently only **Claude Desktop** can use this plugin. Claude Code users can install it now and it will work once Computer Use is added to the CLI.
+>
+> **注意：** 此插件依赖 **Computer Use**（截图 + 点击 + 输入）。Claude Code CLI 暂不支持 Computer Use——目前仅 **Claude Desktop** 可使用。Claude Code 用户可以先安装，等 CLI 支持 Computer Use 后即可使用。
+
 ## Installation
 
 ### Claude Code
