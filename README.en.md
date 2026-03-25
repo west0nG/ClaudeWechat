@@ -10,15 +10,29 @@ A Claude plugin that automates **WeChat Desktop** through Computer Use (screensh
 
 ## What It Can Do
 
+### Core Operations
+
 **Send messages** — Search any contact or group chat, navigate to it, and send your message.
 
 **Quick reply** — Type and send directly in the current conversation.
 
 **Read messages** — Capture chat history via screenshots, scroll up for older messages.
 
+### Advanced Operations
+
+**Broadcast** — Send the same message to multiple contacts in a loop.
+
+**Unread summary** — Scan the chat list for unread badges, click into each, and produce a structured summary.
+
+**Quote reply** — Right-click to quote a specific message and reply to it.
+
 **Forward messages** — Right-click forward to any contact.
 
 **Send files** — Send files and images via copy-paste (bypasses the native file picker).
+
+### Automation
+
+**Scheduled monitoring** — Combine with `scheduled-tasks` to periodically check for unread messages and alert you.
 
 ### Efficiency Gains
 
@@ -28,10 +42,13 @@ This plugin ships a complete UI layout map for WeChat and uses `computer_batch` 
 
 | Operation | Tool Calls | Screenshots | Savings |
 |-----------|-----------|-------------|---------|
-| Send message to contact | 7 | 3 | ~50% |
+| Send message to contact | 5 | 3 | ~55% |
 | Reply in current chat | 2 | 1 | ~70% |
 | Read messages | 2-3 | 1-2 | ~50% |
-| Forward a message | 7 | 3 | ~40% |
+| Broadcast to N contacts | ~4N+2 | N+1 | ~65% |
+| Unread summary | 8-12 | 5-8 | ~40% |
+| Quote reply | 5 | 2 | ~50% |
+| Forward a message | 5-7 | 3 | ~40% |
 
 ## Installation
 
