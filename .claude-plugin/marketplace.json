@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "wechat-desktop",
+      "description": "Automate WeChat Desktop via Computer Use — send messages, read chats, search contacts, forward messages with optimized action sequences",
+      "source": {
+        "type": "github",
+        "repo": "west0nG/ClaudeWechat",
+        "path": "."
+      }
+    }
+  ]
+}
