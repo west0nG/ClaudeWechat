@@ -2,18 +2,13 @@
 
 ```
 📸 1. screenshot → find target message
-   2. right-click on message
+   2. right-click on message (near center of bubble, not edge)
 📸 3. screenshot → click "Forward..." or "转发" in context menu
-📸 4. screenshot → search and select target contact in picker dialog
-   5. click "Send" or "发送"
+📸 4. screenshot → in "Send To" picker, search contact or use "Recent Forwards"
+   5. click radio button next to contact, then "Send" / "发送"
 ```
 
-**5-7 calls, 3 screenshots.** More screenshots needed due to context menus and dialogs.
+**5-7 calls, 3 screenshots.**
 
-## Tips
-
-- The context menu and button labels depend on WeChat's UI language. Look for **"Forward..."** (English) or **"转发"** (Chinese).
-- The send button is **"Send"** (English) or **"发送"** (Chinese).
-- The picker dialog title is **"Send To"** (English) or **"转发"** (Chinese). It shows "Latest Chats" and may show **"Recent Forwards"** at the top for quick re-forwarding.
-- In the picker dialog, search for the contact by name, click the radio button next to them, then click Send.
-- Right-clicking your own message shows an extra **"Recall"** (English) or **"撤回"** (Chinese) option — do not confuse it with Forward.
+- If target is in **"Recent Forwards"** at top of picker, click directly — no search needed.
+- Do NOT confuse "Recall" / "撤回" (own messages only) with Forward.
