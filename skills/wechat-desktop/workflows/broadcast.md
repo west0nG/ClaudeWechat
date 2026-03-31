@@ -5,7 +5,7 @@ Loop over "Send Message" for each contact:
 ```
 📸 1. screenshot → locate search box (once)
 Per contact:
-   2. computer_batch: [click search box, type name, wait 1s]
+   2. computer_batch: [click search box, key "cmd+a", type name, wait 1s]
 📸 3. screenshot → verify contact
    4. click result
    5. computer_batch: [click input box, key "cmd+a", type message, key "Return"]

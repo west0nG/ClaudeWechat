@@ -14,4 +14,6 @@
 
 - The context menu and button labels depend on WeChat's UI language. Look for **"Forward..."** (English) or **"转发"** (Chinese).
 - The send button is **"Send"** (English) or **"发送"** (Chinese).
-- In the picker dialog, search for the contact by name, click the checkbox next to them, then click Send.
+- The picker dialog title is **"Send To"** (English) or **"转发"** (Chinese). It shows "Latest Chats" and may show **"Recent Forwards"** at the top for quick re-forwarding.
+- In the picker dialog, search for the contact by name, click the radio button next to them, then click Send.
+- Right-clicking your own message shows an extra **"Recall"** (English) or **"撤回"** (Chinese) option — do not confuse it with Forward.
