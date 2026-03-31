@@ -6,7 +6,7 @@
 
 一个 Claude 插件，通过 Computer Use（屏幕截图 + 鼠标点击 + 键盘输入）自动操作**微信桌面版**。内置完整的 UI 布局映射和优化操作流程，让 Claude 不用反复截图试探，直接高效完成任务。
 
-> **当前状态：** 此插件依赖 Computer Use 能力。目前仅 **Claude Desktop** 支持 Computer Use，Claude Code CLI 暂不支持。CLI 用户可先安装，等支持后即可使用。
+> **当前状态：** 此插件依赖 Computer Use 能力。**Claude Desktop** 和 **Claude Code CLI** 均已支持 Computer Use。
 
 ## 能做什么
 
@@ -50,6 +50,28 @@
 | 引用回复 | 5 | 2 | ~50% |
 | 转发消息 | 5-7 | 3 | ~40% |
 
+## 项目结构
+
+```
+skills/wechat-desktop/
+├── SKILL.md                        # 入口文件：setup + 核心规则 + UI 布局 + 操作索引
+├── workflows/                      # 操作流程（按需加载，节省上下文）
+│   ├── send-message.md             # 发送消息
+│   ├── reply.md                    # 快速回复
+│   ├── read-messages.md            # 阅读消息
+│   ├── broadcast.md                # 群发
+│   ├── unread-summary.md           # 未读总结
+│   ├── quote-reply.md              # 引用回复
+│   ├── forward.md                  # 转发
+│   ├── send-file.md                # 发送文件
+│   └── scheduled-monitoring.md     # 定时监控
+└── reference/                      # 参考资料（按需加载）
+    ├── shortcuts.md                # 快捷键
+    └── troubleshooting.md          # 常见问题排障
+```
+
+采用多文件架构：SKILL.md 只加载核心信息（~65 行），具体操作流程按需读取，相比单文件方案**节省 60-70% 上下文**。
+
 ## 安装
 
 ### Claude Desktop
@@ -66,8 +88,6 @@ Claude Desktop 暂不支持从 GitHub 直接安装第三方插件。请手动添
 claude plugin marketplace add https://github.com/west0nG/ClaudeWechat
 claude plugin install wechat-desktop
 ```
-
-> Claude Code CLI 暂不支持 Computer Use，安装后需等 CLI 支持才能使用。
 
 ## 系统要求
 
