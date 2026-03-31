@@ -30,12 +30,15 @@ Minimal screenshots, maximum batching.
 | Operation | File |
 |-----------|------|
 | Send message | `workflows/send-message.md` |
-| Read messages | `workflows/read-messages.md` |
 | Broadcast (群发) | `workflows/broadcast.md` |
 | Unread summary | `workflows/unread-summary.md` |
 | Quote reply (引用回复) | `workflows/quote-reply.md` |
 | Forward (转发) | `workflows/forward.md` |
 | Send file/image | `workflows/send-file.md` |
+
+## Read Messages
+
+Just screenshot. Scroll up + screenshot again for older messages. Use `zoom` if text is small.
 
 ## Reference
 

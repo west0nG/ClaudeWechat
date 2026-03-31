@@ -1,18 +1,13 @@
-# Send Message to a Contact
+# Send Message
 
 ```
 📸 1. screenshot → locate search box
-   2. computer_batch: [click search box, key "cmd+a", type contact name, wait 1s]
-📸 3. screenshot → verify correct contact in results
-   4. click correct search result (prefer Contacts section)
-   5. computer_batch: [click input box, key "cmd+a", type message, key "Return", screenshot]
+   2. computer_batch: [click search, cmd+a, type name, wait 1s]
+📸 3. screenshot → verify contact in Contacts section
+   4. click contact
+   5. computer_batch: [click input, cmd+a, type message, Return, screenshot]
 ```
 
-**5 calls, 3 screenshots.** (Setup calls excluded.)
-
-## Tips
-
-- `cmd+a` clears leftover drafts before typing.
-- `type` handles Chinese directly — no need for clipboard workaround.
-- If multiple similar contacts appear, ask user for full name or WeChat ID to disambiguate.
-- If clicking the search box fails (e.g., another app overlaps), use `cmd+f` to focus the search box instead.
+- If already in target chat (header matches), skip steps 1-4.
+- If search box click fails, use `cmd+f` instead.
+- Multiple matches? Ask user for full name or WeChat ID.
