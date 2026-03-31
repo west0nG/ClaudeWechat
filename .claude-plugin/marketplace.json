@@ -1,14 +1,17 @@
 {
-  "version": "1.0.0",
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ClaudeWechat",
+  "description": "Automate WeChat Desktop via Computer Use — send messages, read chats, search contacts, forward messages with optimized action sequences",
+  "owner": {
+    "name": "Weston",
+    "email": "weston@example.com"
+  },
   "plugins": [
     {
       "name": "wechat-desktop",
       "description": "Automate WeChat Desktop via Computer Use — send messages, read chats, search contacts, forward messages with optimized action sequences",
-      "source": {
-        "type": "github",
-        "repo": "west0nG/ClaudeWechat",
-        "path": "."
-      }
+      "source": ".",
+      "category": "productivity"
     }
   ]
 }
